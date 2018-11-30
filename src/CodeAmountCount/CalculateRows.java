@@ -82,4 +82,11 @@ public class CalculateRows {
             }
         }
     }
+
+    public static void doubleNoteType( String type)   {
+
+    } public static void singleNoteType( String type)   {
+
+    }
+
 }
