@@ -3,8 +3,11 @@ package CodeAmountCount;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CalculateRows {
+
 
     static long classCount = 0;
     static long emptyLines = 0;
@@ -13,9 +16,9 @@ public class CalculateRows {
     static long allLines = 0;
 
     public static void main(String[] args) throws Exception {
-        File f = new File("C:\\ZZBK\\work\\bigchain");
+        File f = new File("C:\\ZZBK\\work\\JAVA");
 
-        String type = ".py";
+        String type = ".java";
 
         CalculateRows.treeFile(f, type);
 
@@ -37,6 +40,8 @@ public class CalculateRows {
     public static void treeFile(File f, String type) throws Exception {
         File[] childs = f.listFiles();
 
+        String[] doubleNotes = doubleNoteType(type);
+        String singleNotes = singleNoteType(type);
         for (int i = 0; i < childs.length; i++) {
             File file = childs[i];
 
@@ -57,16 +62,16 @@ public class CalculateRows {
 
                         if (line.matches("^[//s&&[^//n]]*$")) {
                             emptyLines++;
-                        } else if (line.startsWith("/*") && !line.endsWith("*/")) {
+                        } else if (line.startsWith(doubleNotes[0]) && !line.endsWith(doubleNotes[1])) {
                             commentLines++;
                             comment = true;
 
                         } else if (true == comment) {
                             commentLines++;
-                            if (line.endsWith("*/")) {
+                            if (line.endsWith(doubleNotes[1])) {
                                 comment = false;
                             }
-                        } else if (line.startsWith("//") || (line.startsWith("/*") && line.endsWith("*/"))) {
+                        } else if (line.startsWith(singleNotes) || (line.startsWith(doubleNotes[0]) && line.endsWith(doubleNotes[1]))) {
                             commentLines++;
                         } else {
                             writtenLines++;
@@ -83,10 +88,34 @@ public class CalculateRows {
         }
     }
 
-    public static void doubleNoteType( String type)   {
+    public static String[] doubleNoteType(String type) {
+        String[] a = new String[2];
+        switch (type) {
+            case ".java":
+                a[0] = "/*";
+                a[1] = "*/";
+                break;
 
-    } public static void singleNoteType( String type)   {
+            case ".py":
+                a[0] = "\"\"\"";
+                a[1] = a[0];
+                break;
+        }
+
+        return a;
+
 
     }
 
+    public static String singleNoteType(String type) {
+        switch (type) {
+            case ".java":
+                return "//";
+
+            case ".py":
+                return "#";
+        }
+        return "";
+
+    }
 }
