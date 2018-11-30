@@ -1,6 +1,10 @@
 package RSAdemo;
 
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+
+
 import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.security.*;
@@ -54,10 +58,10 @@ public class RSAUtils {
     public static RSAPublicKey getPublicKey(String publicKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         //通过X509编码的Key指令获得公钥对象
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_Algorithm);
-        //  X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.decodeBase64(publicKey));
-        //  RSAPublicKey key = (RSAPublicKey) keyFactory.generatePublic(x509KeySpec);
-        //  return key;
-        return null;
+          X509EncodedKeySpec x509KeySpec = new X509EncodedKeySpec(Base64.decodeBase64(publicKey));
+          RSAPublicKey key = (RSAPublicKey) keyFactory.generatePublic(x509KeySpec);
+          return key;
+      //  return null;
     }
 
     /**
@@ -69,10 +73,10 @@ public class RSAUtils {
     public static RSAPrivateKey getPrivateKey(String privateKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
         //通过PKCS#8编码的Key指令获得私钥对象
         KeyFactory keyFactory = KeyFactory.getInstance(RSA_Algorithm);
-        //  PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey));
-        //   RSAPrivateKey key = (RSAPrivateKey) keyFactory.generatePrivate(pkcs8KeySpec);
-        //    return key;
-        return null;
+          PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey));
+           RSAPrivateKey key = (RSAPrivateKey) keyFactory.generatePrivate(pkcs8KeySpec);
+            return key;
+      //  return null;
     }
 
     /**
@@ -86,8 +90,8 @@ public class RSAUtils {
         try {
             Cipher cipher = Cipher.getInstance(RSA_Algorithm);
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
-            // return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
-            return null;
+             return Base64.encodeBase64URLSafeString(rsaSplitCodec(cipher, Cipher.ENCRYPT_MODE, data.getBytes(CHARSET), publicKey.getModulus().bitLength()));
+//            return null;
         } catch (Exception e) {
             throw new RuntimeException("加密字符串[" + data + "]时遇到异常", e);
         }
@@ -105,8 +109,8 @@ public class RSAUtils {
         try {
             Cipher cipher = Cipher.getInstance(RSA_Algorithm);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            // return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), privateKey.getModulus().bitLength()), CHARSET);
-            return null;
+             return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), privateKey.getModulus().bitLength()), CHARSET);
+//            return null;
         } catch (Exception e) {
             throw new RuntimeException("解密字符串[" + data + "]时遇到异常", e);
         }
@@ -143,8 +147,8 @@ public class RSAUtils {
         try {
             Cipher cipher = Cipher.getInstance(RSA_Algorithm);
             cipher.init(Cipher.DECRYPT_MODE, publicKey);
-            //  return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET);
-            return null;
+             return new String(rsaSplitCodec(cipher, Cipher.DECRYPT_MODE, Base64.decodeBase64(data), publicKey.getModulus().bitLength()), CHARSET);
+//            return null;
         } catch (Exception e) {
             throw new RuntimeException("解密字符串[" + data + "]时遇到异常", e);
         }
@@ -176,7 +180,7 @@ public class RSAUtils {
             throw new RuntimeException("加解密阈值为[" + maxBlock + "]的数据时发生异常", e);
         }
         byte[] resultDatas = out.toByteArray();
-        //  IOUtils.closeQuietly(out);
+          IOUtils.closeQuietly(out);
         return resultDatas;
     }
 
