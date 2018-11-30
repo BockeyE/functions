@@ -16,7 +16,7 @@ public class CalculateRows {
     static long allLines = 0;
 
     public static void main(String[] args) throws Exception {
-        File f = new File("C:\\Users\\user1\\.m2\\repository");
+        File f = new File("C:\\ZZBK\\work\\JAVA");
 
         String type = ".java";
 
