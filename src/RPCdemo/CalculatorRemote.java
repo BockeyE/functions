@@ -23,7 +23,7 @@ public class CalculatorRemote {
 
         Object o = ois.readObject();
 
-        return (int) o;
+        return (Integer) o;
 
 
     }
