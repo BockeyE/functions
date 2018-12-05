@@ -40,16 +40,21 @@ public class test {
         String address = "1";
         String email = "1";
         Map map = new HashMap();
-        map.put("name","phone");
-        map.put("id","phone");
-        map.put("phone","phone");
-        map.put("address","phone");
-        map.put("email","phone");
+        map.put("name", "phone");
+        map.put("id", "phone");
+        map.put("phone", "phone");
+        map.put("address", "phone");
+        map.put("email", "phone");
         System.out.println(map);
         entityTest e = new entityTest();
 
-        BeanUtils.populate(e,map);
+        BeanUtils.populate(e, map);
         System.out.println(e);
+
+
+        MyMap m2 = new MyMap();
+        m2.putThis("1", "2").putThis("2,", "3");
+
 
     }
 
