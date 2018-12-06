@@ -9,6 +9,7 @@ import java.util.Map;
 public class CalculateRows {
 
 
+
     static long classCount = 0;
     static long emptyLines = 0;
     static long commentLines = 0;
