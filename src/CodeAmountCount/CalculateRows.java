@@ -34,8 +34,6 @@ public class CalculateRows {
             System.out.println("代码平均数量:" + writtenLines / classCount);
         }
         System.out.println("总 行数量：" + allLines);
-
-
     }
 
     public static void treeFile(File f, String type) throws Exception {
