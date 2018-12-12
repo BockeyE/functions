@@ -39,7 +39,7 @@ public class QuickSort {
     public int quickCore(int[] arr, int head, int end) {
         int piv = arr[head];
         while (head < end) {
-            while (head < end && (arr[end] > piv)) {
+            while (head < end && (arr[end] >= piv)) {
                 end--;
             }
             arr[head] = arr[end];
