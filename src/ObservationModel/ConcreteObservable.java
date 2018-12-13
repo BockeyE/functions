@@ -20,7 +20,6 @@ public class ConcreteObservable extends Observable {
         }
     }
 
-
     @Override
     public <T> void notifyObserver(T t, Object... obs) {
         if (t == null) {
