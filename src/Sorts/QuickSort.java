@@ -13,7 +13,6 @@ public class QuickSort {
         System.out.println(Arrays.toString(arr));
     }
 
-
     public void quick(int[] arr) {
         quicks(arr, 0, arr.length - 1);
     }
@@ -25,7 +24,6 @@ public class QuickSort {
             quicks(arr, piv + 1, end);
         }
     }
-
 
     //    注意这里循环过程中，arr[x]与piv的对比，要加=，
     //    否则在随机数列中有重复数字时会陷入无限递归导致overflow
