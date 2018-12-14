@@ -1,5 +1,8 @@
 package ObservationModel;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
 /**
  * @author bockey
  */
@@ -14,24 +17,23 @@ public class ConcreteObservable extends Observable {
     }
 
     @Override
-    public void notifyObservers(Object... obs) {
-        for (Class<?> ob : obslist) {
-            this.notifyObserver(ob, obs);
-        }
-    }
-
-    @Override
-    public <T> void notifyObserver(T t, Object... obs) {
-        if (t == null) {
-            throw new NullPointerException();
-        }
-        this.notifyObserver(t.getClass(), obs);
-    }
-
-    @Override
     public void notifyObserver(Class<?> cls, Object... obs) {
         if (cls == null) {
             throw new NullPointerException();
+        }
+
+        Method[] methods = cls.getDeclaredMethods();
+        for (Method method : methods) {
+            if (method.getName().equals("update")) {
+                try {
+                    method.invoke(cls, obs);
+                    break;
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

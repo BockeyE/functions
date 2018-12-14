@@ -61,10 +61,20 @@ public abstract class Observable {
         }
     }
 
-    public abstract void notifyObservers(Object... obs);
+    public void notifyObservers(Object... obs) {
+        for (Class<?> cls : obslist) {
+            this.notifyObserver(cls, obs);
+        }
+    }
+
+
+    public <T> void notifyObserver(T t, Object... obs) {
+        if (t == null) {
+            throw new NullPointerException();
+        }
+        this.notifyObserver(t.getClass(), obs);
+    }
 
     public abstract void notifyObserver(Class<?> cls, Object... obs);
-
-    public abstract <T> void notifyObserver(T t, Object... obs);
 
 }
