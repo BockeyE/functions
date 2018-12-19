@@ -12,7 +12,7 @@ import java.util.List;
 public class AllArrangement {
     public static void main(String[] args) {
 
-        String[] ss = {"a", "b", "c", "d"};
+        String[] ss = {"atbUc6", "atc6bU", "bUatc6", "bUc6at", "c6bUat", "c6atbU"};
         unrepeat(ss);
 
     }
