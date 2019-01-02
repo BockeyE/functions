@@ -12,14 +12,14 @@ public class test {
     int[] a = {1, 2, 3, 4, 5};
 
     public static void main(String[] args) throws InvocationTargetException, IllegalAccessException {
-//        test test = new test();
-//        test.com((Integer o1, Integer o2) -> {
+//        AllArrangement AllArrangement = new AllArrangement();
+//        AllArrangement.com((Integer o1, Integer o2) -> {
 //            {
 //                return (Integer) o1 - (Integer) o2;
 //            }
 //        });
 
-//        System.out.println(test.a);
+//        System.out.println(AllArrangement.a);
 
 //        int k = 30001;
 //        for (int i = 0; i < 10001; i++) {
