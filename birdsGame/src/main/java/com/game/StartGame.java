@@ -5,6 +5,6 @@ package com.game;
  */
 public class StartGame {
     public static void main(String[] args) {
-
+        new GameUI();
     }
 }

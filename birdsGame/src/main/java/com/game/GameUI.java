@@ -16,7 +16,27 @@ public class GameUI extends JFrame implements MouseListener, MouseMotionListener
      * pipe		 : 游戏中的障碍物，即管道
      * score 	 : 游戏得分
      */
+
+
+
+    /*
+     * 游戏状态标志
+     * 0 ： 游戏未开始
+     * 1 ： 游戏进行中
+     * 2：  游戏结束
+     */
     public static int flag = 0;
+
+    //游戏开始时间
+    public static long start = 0;
+
+
+    //管道夹缝宽度
+    public static final int w = 100;
+    //两个管道之间的宽度
+    public static final int d = 300;
+
+
 
     public void mouseClicked(MouseEvent e) {
 

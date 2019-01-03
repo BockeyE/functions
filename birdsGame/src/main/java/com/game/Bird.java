@@ -88,4 +88,90 @@ public class Bird extends Thread {
         }
     }
 
+    public void setStatus() {
+        if (flag == Bird.DOWN) {
+            flag = Bird.FLY;
+            old2x = x;
+            old2y = y;
+            GameUI.start = System.currentTimeMillis();
+        } else {
+            flag = Bird.DOWN;
+            old2x = x;
+            old2y = y;
+            GameUI.start = System.currentTimeMillis();
+            upV = upVn;
+        }
+    }
+
+    public void setFlyStatus() {
+        flag = Bird.DOWN;
+        old2x = x;
+        old2y = y;
+        GameUI.start = System.currentTimeMillis();
+        upV = upVn;
+    }
+
+
+    // 获取小鸟的位置
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    // 重新开始
+    public void reStart() {
+        x = oldx;
+        y = oldy;
+        old2x = x;
+        old2y = y;
+    }
+
+    // 运动方法
+    public void move() {
+        if (GameUI.flag == 0) {
+            setImageIndex();
+            return;
+        } else if (GameUI.flag == 2) {
+            return;
+        }
+        if (flag == Bird.DOWN) {
+            long end = System.currentTimeMillis();
+            long t = (end - GameUI.start);
+            int oy = (int) (old2y + 0.8 * g * t * t);
+            y = oy;
+        } else {
+            y--;
+            long end = System.currentTimeMillis();
+            long t = (end - GameUI.start);
+            upV += 0. * g * t;
+            if ((upVn - 60 * g * t) <= 0) {
+                setStatus();
+            }
+            if (y <= 0) {
+                y = 0;
+            }
+        }
+        setImageIndex();
+    }
+
+    // 线程，让鸟一直运动
+    @Override
+    public void run() {
+        while (true) {
+            move();
+            try {
+                if (flag == Bird.FLY) {
+                    sleep(upV);
+                } else {
+                    sleep(downV);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
+
