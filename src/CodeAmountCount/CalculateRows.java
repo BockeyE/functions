@@ -58,7 +58,6 @@ public class CalculateRows {
                     while ((line = br.readLine()) != null) {
                         allLines++;
                         line = line.trim();
-
                         if (line.matches("^[//s&&[^//n]]*$")) {
                             emptyLines++;
                         } else if (line.startsWith(doubleNotes[0]) && !line.endsWith(doubleNotes[1])) {
@@ -100,10 +99,7 @@ public class CalculateRows {
                 a[1] = a[0];
                 break;
         }
-
         return a;
-
-
     }
 
     public static String singleNoteType(String type) {
@@ -115,6 +111,5 @@ public class CalculateRows {
                 return "#";
         }
         return "";
-
     }
 }
