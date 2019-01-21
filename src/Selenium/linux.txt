@@ -5,6 +5,8 @@ sudo dpkg -i google-chrome*
 
 sudo apt-get -f install
 
+
+===================>
 opts.add_argument('--disable-gpu')
 opts.add_argument('--no-sandbox')
 
@@ -13,5 +15,7 @@ chromedriver -->  /usr/bin
 chmod 777 chromedriver
 
 ===================>
+
+
 
 
