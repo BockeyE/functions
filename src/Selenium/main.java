@@ -73,8 +73,8 @@ public class main {
         System.out.println(("网页title： " + title));
         String www = page.getCurrentUrl();
         System.out.println(("访问的地址： " + www));
-        String name = "yipingsz";
-        String pasw = "dingcheng123";
+        String name = "";
+        String pasw = "";
         System.out.println("请在看到此提示后，在命令窗口正确输入验证码，并回车；输入失败时请重启程序");
         Scanner sc = new Scanner(System.in);
         page.switchTo().frame(page.findElementByXPath("/html/body/div[2]/div[1]/div[2]/iframe"));
