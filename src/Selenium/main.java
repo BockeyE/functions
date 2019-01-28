@@ -127,10 +127,10 @@ public class main {
             page.findElementByXPath("/html/body/div[2]/table[2]/tbody/tr/td[1]/table/tbody/tr[2]/td/table/tbody/tr[2]/td").click();
             page.findElementByXPath("/html/body/div[2]/table[3]/tbody/tr[1]/td/input[1]").click();
             page.findElementByXPath("//*[@id=\"next\"]").click();
-//            选择期限
+            //选择期限
             Select period = new Select(page.findElementByXPath("//*[@id=\"timelimit\"]"));
             period.selectByVisibleText(registrationPeriod);
-//            填表人归档号
+            //填表人归档号
             page.findElementById("title").sendKeys(fillingNumber);
             page.findElementByXPath("/html/body/div[2]/form/div/input[1]").click();
             Thread.currentThread().sleep(200);
