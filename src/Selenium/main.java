@@ -26,12 +26,15 @@ public class main {
     static String filepath = "C:\\auto\\AutoFill.xls";
 
     public static void main(String[] args) throws Exception {
-        main m = new main();
-        Sheet sheet = m.getLinesFromPoi(new File(filepath));
-        System.out.println(sheet.getRow(1).getCell(1).getStringCellValue());
-        sheet.getLastRowNum();
-
-        m.mainAction(sheet);
+//        main m = new main();
+//        Sheet sheet = m.getLinesFromPoi(new File(filepath));
+//        System.out.println(sheet.getRow(1).getCell(1).getStringCellValue());
+//        sheet.getLastRowNum();
+//
+        double a=0.1f;
+        double b=0.9f;
+        System.out.println(a+b);
+//        m.mainAction(sheet);
     }
 
     public int getRowslenth(Sheet sheet) {
