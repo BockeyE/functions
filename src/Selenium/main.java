@@ -134,15 +134,15 @@ public class main {
             page.findElementById("title").sendKeys(fillingNumber);
             page.findElementByXPath("/html/body/div[2]/form/div/input[1]").click();
             Thread.currentThread().sleep(200);
-//            点击 增加出让人
+            //点击 增加出让人
             page.findElementByXPath("//*[@id=\"addDebtor\"]").click();
             Select type = new Select(page.findElementByXPath("//*[@id=\"debtorType\"]"));
             type.selectByIndex(2);
-//            填写各项出让人信息
+            //填写各项出让人信息
             page.findElementByXPath("//*[@id=\"debtorName\"]").sendKeys(transfer);
             page.findElementByXPath("//*[@id=\"orgCode\"]").sendKeys(orgCode);
             page.findElementByXPath("//*[@id=\"businessCode\"]").sendKeys(orgCode);
-//            page.findElementByXPath("//*[@id=\"lei\"]").sendKeys();
+            //page.findElementByXPath("//*[@id=\"lei\"]").sendKeys();
             page.findElementByXPath("//*[@id=\"responsiblePerson\"]").sendKeys(representative);
             new Select(page.findElementByXPath("//*[@id=\"industryCode\"]")).selectByVisibleText(sector);
             new Select(page.findElementByXPath("//*[@id=\"scale\"]")).selectByVisibleText(scale);
