@@ -10,15 +10,12 @@ import java.util.List;
 public class create {
 
     public static void main(String[] args) throws IOException {
-
         File f = new File("src/hashCollision/res.txt");
         // FileInputStream fis=new FileInputStream(f);
         FileWriter fos = new FileWriter(f, true);
         fos.write("{");
-
         System.out.println(f.getAbsolutePath());
         System.out.println(f.exists());
-
         ArrayList as = new ArrayList();
         StringBuilder sb;
         String[] arr = {"at", "bU", "c6"};
