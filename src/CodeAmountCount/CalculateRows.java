@@ -16,10 +16,8 @@ public class CalculateRows {
 
     public static void main(String[] args) throws Exception {
         File f = new File("C:\\ZZBK\\work\\JAVA");
-
         String type = ".java";
         CalculateRows.treeFile(f, type);
-
         System.out.println("路径：" + f.getPath());
         System.out.println(type + "文件数量：" + classCount);
         System.out.println("代码数量：" + writtenLines);
@@ -40,18 +38,13 @@ public class CalculateRows {
         String singleNotes = singleNoteType(type);
         for (int i = 0; i < childs.length; i++) {
             File file = childs[i];
-
             if (!file.isDirectory()) {
-
                 if (file.getName().endsWith(type)) {
-
                     classCount++;
                     BufferedReader br = null;
                     boolean comment = false;
                     br = new BufferedReader(new FileReader(file));
-
                     String line = "";
-
                     while ((line = br.readLine()) != null) {
                         allLines++;
                         line = line.trim();
