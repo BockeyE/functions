@@ -7,6 +7,7 @@ import java.util.Date;
  */
 public class AssetOperate {
     String assetId;
+    String operateId;
     String operator;
     String operateType;
     String operateResult;
