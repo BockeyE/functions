@@ -4,19 +4,21 @@ package protem;
  * @author bockey
  */
 public class Asset {
-    String projectId;
+    String proId;
     String assetId;
     String buyer;
     String seller;
     String amount;
     String billNumber;
-    String billExpireDate;
+    String dueDate;
     String invoiceNumber;
     String invoiceAmount;
     String contractNumber;
-    String contractFileName;
+    String performFileName;
     String assetFileName;
-    int status;
+    int assetStatus;
+    int validity;//
+    String attr0;
     String attr1;
     String attr2;
     String attr3;
