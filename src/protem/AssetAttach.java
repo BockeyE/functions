@@ -7,9 +7,10 @@ import java.util.Date;
  */
 public class AssetAttach {
     String assetId;
+    String attachName;
     String attachType;
     Date uploadTime;
     String attachNumber;
     String fileMD5;
-
+    String linkURL;
 }
