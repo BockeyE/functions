@@ -12,5 +12,5 @@ public class AssetAttach {
     Date uploadTime;
     String attachNumber;
     String fileMD5;
-    String linkURL;
+
 }
