@@ -14,5 +14,15 @@ public class AssetVO {
     String contractNumber;
     String contractFileName;
     String assetFileName;
-    int status;
+    int assetStatus;
+    int attachStatus;
+    int invoiceStatus;
+    int validity;
+    int ZDWSeachStatus;
+    int ZDWRegistStatus;
+
+    AssetAttach invoice;
+    AssetAttach contract;
+    AssetAttach perfomFile;
+    AssetAttach assetFile;
 }
