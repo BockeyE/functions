@@ -12,9 +12,12 @@ public class ZipTest {
     public static void main(String[] args) throws IOException {
         String zf = ("C:\\Users\\user1\\Desktop\\bh.jpg");
         String aim = ("C:\\Users\\user1\\Desktop\\front\\auto222.zip");
-        compressFile(zf, aim);
+//        compressFile(zf, aim);
         String dezip = "C:\\Users\\user1\\Desktop\\auto\\a.jpg";
-        decompressFile(aim, dezip);
+//        decompressFile(aim, dezip);
+
+        String au = "C:\\Users\\user1\\Desktop\\auto.zip";
+        decomDir(au, "");
     }
 
 
@@ -52,12 +55,10 @@ public class ZipTest {
     }
 
     /**
-     *
      * @param srcf
      * @param destf
-     * @throws IOException
-     * 解压操作，获取zip文件，用entries拿到entry列表，
-     * 遍历中拿到entry的输入流读取 文件，再新建输出流写出即可
+     * @throws IOException 解压操作，获取zip文件，用entries拿到entry列表，
+     *                     遍历中拿到entry的输入流读取 文件，再新建输出流写出即可
      */
     public static void decompressFile(String srcf, String destf) throws IOException {
         File srf = new File(srcf);
@@ -66,15 +67,31 @@ public class ZipTest {
         ZipEntry entry = null;
 //        while (entries.hasMoreElements()) {
         entry = entries.nextElement();
-        String path = destf + File.separator + entry.getName();
-        File aim = new File(path);
         InputStream inputStream = zf.getInputStream(entry);
         FileOutputStream fop = new FileOutputStream(destf);
         streamDo(fop, inputStream);
-        inputStream.close();
-        fop.close();
+        closeAll(fop, inputStream);
 //        }
     }
+
+    public static void decomDir(String srcf, String destf) throws IOException {
+        File srf = new File(srcf);
+
+        ZipFile zf = new ZipFile(srf);
+
+        Enumeration<? extends ZipEntry> entries = zf.entries();
+        ZipEntry entry = null;
+        System.out.println();
+
+        while (entries.hasMoreElements()) {
+            entry = entries.nextElement();
+
+            System.out.println(entry.getName());
+            System.out.println(entry.isDirectory());
+            System.out.println(entry);
+        }
+    }
+
 
     private static void closeAll(Closeable... c) {
         for (Closeable closeable : c) {
