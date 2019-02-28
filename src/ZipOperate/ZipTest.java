@@ -15,14 +15,14 @@ public class ZipTest {
 
         String aim = ("C:\\Users\\user1\\Desktop\\front\\auto222.zip");
 
-        compress(zf, aim);
+        compressFile(zf, aim);
 
 
         String dezip = "C:\\Users\\user1\\Desktop\\auto\\a.jpg";
-        decompress(aim, dezip);
+        decompressFile(aim, dezip);
     }
 
-    public static void compress(String srcf, String destf) throws IOException {
+    public static void compressFile(String srcf, String destf) throws IOException {
         File src = new File(srcf);
         File dest = new File(destf);
 
@@ -59,7 +59,7 @@ public class ZipTest {
 
     }
 
-    public static void decompress(String srcf, String destf) throws IOException {
+    public static void decompressFile(String srcf, String destf) throws IOException {
         File srf = new File(srcf);
         ZipFile zf = new ZipFile(srf);
         Enumeration<? extends ZipEntry> entries = zf.entries();
@@ -84,8 +84,6 @@ public class ZipTest {
 //        }
 
     }
-
-
 
 
 }
