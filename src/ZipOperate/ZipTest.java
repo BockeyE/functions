@@ -17,6 +17,12 @@ public class ZipTest {
         decompressFile(aim, dezip);
     }
 
+
+    /***
+     *传入2个路径，先用checkout流封装验证一下out输出流；
+     * 然后将该check流传入zipout流
+     * 添加zipentry后，直接进行input和output的操作即可
+     */
     public static void compressFile(String srcf, String destf) throws IOException {
         File src = new File(srcf);
         File dest = new File(destf);
@@ -33,7 +39,7 @@ public class ZipTest {
         zos.putNextEntry(ze);
         FileInputStream fip = new FileInputStream(src);
         streamDo(zos, fip);
-        closeAll(zos,fip,fops,ccos);
+        closeAll(zos, fip, fops, ccos);
 
     }
 
@@ -45,6 +51,14 @@ public class ZipTest {
         }
     }
 
+    /**
+     *
+     * @param srcf
+     * @param destf
+     * @throws IOException
+     * 解压操作，获取zip文件，用entries拿到entry列表，
+     * 遍历中拿到entry的输入流读取 文件，再新建输出流写出即可
+     */
     public static void decompressFile(String srcf, String destf) throws IOException {
         File srf = new File(srcf);
         ZipFile zf = new ZipFile(srf);
@@ -70,7 +84,6 @@ public class ZipTest {
                 e.printStackTrace();
             }
         }
-
     }
 
 }
