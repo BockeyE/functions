@@ -61,8 +61,6 @@ public class ZipAppache {
             i++;
         }
     }
-
-
     /**
      *  in springboot, creat a tem file ,and save multipart content, then use zipfile
      */
