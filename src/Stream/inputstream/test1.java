@@ -11,6 +11,7 @@ public class test1 {
     public static void main(String[] args) throws IOException {
         sss();
     }
+
     /*
     一个流ips只能读一次，为了解决这个问题需要用到mark
      */
@@ -39,5 +40,29 @@ public class test1 {
         ops2.flush();
         ops2.close();
         ops.close();
+    }
+
+
+    public static void meth2(String[] args) throws IOException {
+        InputStream input = new FileInputStream("");
+//将InputStream对象转换成ByteArrayOutputStream
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = input.read(buffer)) > -1) {
+            byteArrayOutputStream.write(buffer, 0, len);
+        }
+        byteArrayOutputStream.flush();
+//将byteArrayOutputStream可转换成多个InputStream对象，达到多次读取InputStream效果
+        InputStream inputStreamA = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+        InputStream inputStreamB = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
+//将InputStream转换成字符串
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStreamB, "UTF-8"));
+        String line = null;
+        StringBuilder sb = new StringBuilder();
+        while ((line = br.readLine()) != null) {
+            sb.append(line);
+
+        }
     }
 }
