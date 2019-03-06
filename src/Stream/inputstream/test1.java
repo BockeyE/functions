@@ -19,8 +19,8 @@ public class test1 {
         File f = new File("C:\\Users\\user1\\Desktop\\bh2.jpg");
         InputStream ips = new FileInputStream(f);
 
-        BufferedInputStream bis = new BufferedInputStream(ips, 1024 * 1024 * 50);
-        bis.mark(1024 * 1024 * 50);
+        BufferedInputStream bis = new BufferedInputStream(ips, ips.available() + 1);
+        bis.mark(ips.available());
 
         System.out.println(bis.markSupported());
         FileOutputStream ops = new FileOutputStream("C:\\Users\\user1\\Desktop\\auto\\2ss.jpg");
