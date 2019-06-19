@@ -25,16 +25,14 @@ public class FTPUpFile {
                 sftp.cd(targetPath);
 //                Scanner scanner = new Scanner(System.in);
                 System.out.println(targetPath + ":此目录已存在,文件可能会被覆盖!");
+//                System.out.println(targetPath + ":此目录已存在,文件可能会被覆盖!按y确定");
 //                String next = scanner.next();
 //                if (!next.toLowerCase().equals("y")) {
 //                    return;
 //                }
-
             } catch (SftpException e) {
-
                 sftp.mkdir(targetPath);
                 sftp.cd(targetPath);
-
             }
             File file = new File(startPath);
             copyFile(sftp, file, sftp.pwd());
@@ -47,7 +45,6 @@ public class FTPUpFile {
     }
 
     public static void copyFile(ChannelSftp sftp, File file, String pwd) {
-
         if (file.isDirectory()) {
             File[] list = file.listFiles();
             try {
@@ -62,7 +59,6 @@ public class FTPUpFile {
                 }
                 pwd = pwd + "/" + file.getName();
                 try {
-
                     sftp.cd(file.getName());
                 } catch (SftpException e) {
                     // TODO: handle exception
@@ -76,10 +72,8 @@ public class FTPUpFile {
                 copyFile(sftp, list[i], pwd);
             }
         } else {
-
             try {
                 sftp.cd(pwd);
-
             } catch (SftpException e1) {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
@@ -90,7 +84,6 @@ public class FTPUpFile {
             try {
                 outstream = sftp.put(file.getName());
                 instream = new FileInputStream(file);
-
                 byte b[] = new byte[1024];
                 int n;
                 try {
@@ -101,7 +94,6 @@ public class FTPUpFile {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
-
             } catch (SftpException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -113,12 +105,56 @@ public class FTPUpFile {
                     outstream.flush();
                     outstream.close();
                     instream.close();
-
                 } catch (Exception e2) {
                     // TODO: handle exception
                     e2.printStackTrace();
                 }
             }
+        }
+    }
+
+    public static void FTPUpFileByInputStream(Session session, InputStream ips, String filename, String targetPath) {
+        Channel channel = null;
+        try {
+            channel = (Channel) session.openChannel("sftp");
+            channel.connect(10000000);
+            ChannelSftp sftp = (ChannelSftp) channel;
+            try {
+                sftp.cd(targetPath);
+            } catch (SftpException e) {
+                sftp.mkdir(targetPath);
+                sftp.cd(targetPath);
+            }
+            try {
+                sftp.cd(sftp.pwd());
+            } catch (SftpException e1) {
+                e1.printStackTrace();
+            }
+            OutputStream outstream = null;
+            try {
+                outstream = sftp.put(filename);
+                byte buf[] = new byte[1024];
+                int n = 0;
+                try {
+                    while ((n = ips.read(buf)) != -1) {
+                        outstream.write(buf, 0, n);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } finally {
+                try {
+                    outstream.flush();
+                    outstream.close();
+                } catch (Exception e2) {
+                    e2.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            session.disconnect();
+            channel.disconnect();
         }
     }
 
