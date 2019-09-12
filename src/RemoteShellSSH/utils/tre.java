@@ -9,12 +9,12 @@ public class tre {
     public static void main(String[] args) throws Exception {
         SSHUtils shell = SSHUtils.config("192.168.3.116", "root", "123456", 22);
         String execute = shell.execute("docker ps -a");
-
-
-        MyShell myShell = new MyShell("192.168.3.116", "root", "123456", 22);
-        myShell.sendCommandWithExec("cd /home");
-        myShell.sendCommandWithExec("ls");
-        myShell.printShellByInputStream();
+        System.out.println(execute);
+//
+//        MyShell myShell = new MyShell("192.168.3.116", "root", "123456", 22);
+//        myShell.sendCommandWithExec("cd /home");
+//        myShell.sendCommandWithExec("ls");
+//        myShell.printShellByInputStream();
 
 
 //        FTPUpFile.FTPUpFile(session, "C:\\Users\\user1\\Desktop\\test\\tem.txt", "/home/tem");
