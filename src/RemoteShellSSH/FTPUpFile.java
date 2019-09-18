@@ -25,7 +25,6 @@ public class FTPUpFile {
                 sftp.cd(targetPath);
 //                Scanner scanner = new Scanner(System.in);
                 System.out.println(targetPath + ":此目录已存在,文件可能会被覆盖!");
-//                System.out.println(targetPath + ":此目录已存在,文件可能会被覆盖!按y确定");
 //                String next = scanner.next();
 //                if (!next.toLowerCase().equals("y")) {
 //                    return;
