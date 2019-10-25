@@ -24,6 +24,7 @@ public class BytesToSha256 {
     }
 
 
+
     private static String byte2Hex(byte[] bytes) {
         StringBuffer stringBuffer = new StringBuffer();
         String temp = null;
