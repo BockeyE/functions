@@ -2,15 +2,14 @@ package AAAAAAPracs.POIForWords;
 
 import org.apache.poi.xwpf.usermodel.*;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 /**
+ *
  */
 public class DocxUtil {
     public static InputStream replaceTextToIps(InputStream inputStream, Map<String, Object> contentMap) {
@@ -83,5 +82,23 @@ public class DocxUtil {
                 }
             }
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+
+        File target = new File("报关承诺函法务模板.docx");
+        FileInputStream fis = new FileInputStream(target);
+        HashMap m = new HashMap();
+        m.put("entName", "xxxxx");
+        XWPFDocument document = DocxUtil.replaceTextToXWPF(fis, m);
+        InputStream ips = DocxUtil.XWPFDocumentToIps(document);
+        FileOutputStream fos = new FileOutputStream("tar.docx");
+        byte[] buf = new byte[1024];
+        while (ips.read(buf) != -1) {
+            fos.write(buf);
+            fos.flush();
+        }
+        fos.close();
+        ips.close();
     }
 }
