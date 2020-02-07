@@ -19,4 +19,27 @@ public class eg1 {
 //            return criteriaQuery.getRestriction();
 //        });
 //    }
+
+
+//    Page<SpvProject> page = projectDao.findAll(new Specification<SpvProject>() {
+//        @Override
+//        public Predicate toPredicate(Root<SpvProject> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
+//            Predicate p2 = cb.like(root.get("ownerProjDepartment").as(String.class), "%" + key + "%");
+//            Predicate p4 = cb.like(root.get("designDepartment").as(String.class), "%" + key + "%");
+//            Predicate p5 = cb.like(root.get("constructBuildDepartment").as(String.class), "%" + key + "%");
+//            Predicate p1 = cb.like(root.get("supervisorDepartment").as(String.class), "%" + key + "%");
+//            Predicate p6 = cb.like(root.get("constructManageDepartment").as(String.class), "%" + key + "%");
+//            Predicate p3 = cb.like(root.get("spvProjectName").as(String.class), "%" + key + "%");
+//            Predicate p7 = cb.like(root.get("spvProjectNumber").as(String.class), "%" + key + "%");
+//            CriteriaBuilder.In<Long> in = cb.in(root.get("id"));
+//            for (Long id : ids) {
+//                in.value(id);
+//            }
+//            criteriaQuery.where(cb.and(in,cb.or(p2, p1, p4, p5, p6, p3, p7)));
+//            criteriaQuery.orderBy(cb.desc(root.get("id").as(Long.class)));
+//            return criteriaQuery.getRestriction();
+//        }
+//    }, pageable);
+
+
 }
