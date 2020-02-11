@@ -1,6 +1,6 @@
-//package AAAAAAPracs.JPAExample;
-//
-//import lombok.Data;
+package AAAAAAPracs.JPAExample;
+
+import lombok.Data;
 //
 //import javax.persistence.*;
 //
@@ -8,10 +8,10 @@
 // * @author bockey
 // */
 //@Entity
-//@Data
+@Data
 //@Table(indexes = {@Index(columnList = "fileHash")})
-//public class FileEntity {
-//
+public class FileEntity {
+
 //    @Id
 //    @GeneratedValue
 //    Long id;
@@ -21,5 +21,5 @@
 //    @Basic(fetch = FetchType.LAZY)
 //    @Column(columnDefinition = "mediumBLOB")
 //    byte[] fileBytes;
-//
-//}
+
+}

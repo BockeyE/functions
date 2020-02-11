@@ -1,4 +1,4 @@
-//package AAAAAAPracs.JPAExample;
+package AAAAAAPracs.JPAExample;
 //
 //import lombok.AllArgsConstructor;
 //import lombok.Data;
@@ -12,7 +12,7 @@
 //@javax.persistence.Entity
 //@NoArgsConstructor
 //@AllArgsConstructor
-//public class User {
+public class User {
 //    /**
 //     * 数据表主键
 //     */
@@ -39,7 +39,4 @@
 //        this.entId = entId;
 //        this.roleId = roleId;
 //    }
-//
-//
-//
-//}
+}
