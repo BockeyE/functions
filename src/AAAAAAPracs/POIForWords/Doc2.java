@@ -21,7 +21,21 @@ public class Doc2 {
             //table.addRow() 在表格最后加一行
               // table.addRow(XWPFTableRow row, int pos) 没试过，你可以试试。
              //table.createRow() 在表格最后一加行
-
+    //table.addNewRowBetween 没实现，官网文档也说明，只有函数名，但没具体实现，但很多文章还介绍如何使用这个函数，真是害人
+// 9     //table.insertNewTableRow 本文用这个可以，但是要创建 cell，否则不显示数据
+//         10     //table.addRow() 在表格最后加一行
+//         11     // table.addRow(XWPFTableRow row, int pos) 没试过，你可以试试。
+//         12     //table.createRow() 在表格最后一加行
+//         13
+//         14     for (int i = 0; i < tableList.size(); i++) {//遍历要添加的数据的list
+//        15         XWPFTableRow newRow = table.insertNewTableRow(i+1);//为表格添加行
+//        16         String[] strings =  tableList.get(i);//获取list中的字符串数组
+//        17         for (int j = 0; j < strings.length; j++) {//遍历list中的字符串数组
+//            18             String strings1 =  strings[j];
+//            19             newRow.createCell();//在新增的行上面创建cell
+//            20             newRow.getCell(j).setText(strings1);//给每个cell赋值。
+//            21
+//            22         }
     public static void writeTblWithImageToDocx_2() {
         BufferedReader in = null;
         XWPFDocument  temp = null;
