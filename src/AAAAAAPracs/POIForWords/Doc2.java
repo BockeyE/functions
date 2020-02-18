@@ -16,7 +16,11 @@ import java.util.Map;
 /**
  */
 public class Doc2 {
-
+      //table.addNewRowBetween 没实现，官网文档也说明，只有函数名，但没具体实现，但很多文章还介绍如何使用这个函数，真是害人
+             //table.insertNewTableRow 本文用这个可以，但是要创建 cell，否则不显示数据
+            //table.addRow() 在表格最后加一行
+              // table.addRow(XWPFTableRow row, int pos) 没试过，你可以试试。
+             //table.createRow() 在表格最后一加行
 
     public static void writeTblWithImageToDocx_2() {
         BufferedReader in = null;
