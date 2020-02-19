@@ -1,5 +1,6 @@
 package AAAAAAPracs.POIForWords;
 
+import com.google.common.base.Strings;
 import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
@@ -57,6 +58,73 @@ public class DocxUtil {
         return ips;
     }
 
+    public static void processParagraphs2(List<XWPFParagraph> paragraphList, Map<String, Object> param) {
+        if (paragraphList != null && paragraphList.size() > 0) {
+            for (XWPFParagraph paragraph : paragraphList) {
+                List<XWPFRun> runs = paragraph.getRuns();
+                for (XWPFRun run : runs) {
+                    String text = run.getText(0);
+                    if (text != null) {
+                        boolean isSetText = false;
+                        for (Map.Entry<String, Object> entry : param.entrySet()) {
+                            String key = "${" + entry.getKey() + "}";
+                            if (text.contains(key)) {
+                                isSetText = true;
+                                Object value = entry.getValue();
+                                if (value instanceof String) {//文本替换
+                                    text = text.replace(key, value.toString());
+                                }
+                            }
+                        }
+                        if (isSetText) {
+                            run.setText(text, 0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void processTableValues(XWPFTable table, Map<String, String> data) {
+        int rcount = table.getNumberOfRows();
+        for (int i = 0; i < rcount; i++) {
+            XWPFTableRow row = table.getRow(i);
+            List<XWPFTableCell> cells = row.getTableCells();
+            for (XWPFTableCell cell : cells) {
+                //表格中处理段落（回车）
+                List<XWPFParagraph> cellParList = cell.getParagraphs();
+                for (int p = 0; cellParList != null && p < cellParList.size(); p++) { //每个格子循环
+                    List<XWPFRun> runs = cellParList.get(p).getRuns(); //每个格子的内容都要单独处理
+                    String beforeOneparaString = "";
+                    for (int q = 0; runs != null && q < runs.size(); q++) {
+                        String oneparaString = runs.get(q).getText(runs.get(q).getTextPosition());
+                        for (Map.Entry<String, String> entry : data.entrySet()) {
+                            if (oneparaString != null) {
+                                if (oneparaString.contains(String.format("@%s@", entry.getKey()))) {
+                                    oneparaString = oneparaString.replace(String.format("@%s@", entry.getKey()),
+                                            Strings.nullToEmpty(entry.getValue()));
+                                } else if (oneparaString.contains(entry.getKey()) && beforeOneparaString.endsWith("@")) {
+                                    oneparaString = oneparaString.replace(entry.getKey(),
+                                            Strings.nullToEmpty(entry.getValue()));
+                                    runs.get(q - 1)
+                                            .setText(beforeOneparaString.substring(0, beforeOneparaString.length() - 1), 0);
+                                    if (q + 1 < runs.size()) {
+                                        String afterOneparaString = runs
+                                                .get(q + 1).getText(runs.get(q + 1).getTextPosition());
+                                        runs.get(q + 1)
+                                                .setText(afterOneparaString.substring(0, beforeOneparaString.length() - 1), 0);
+                                    }
+                                }
+
+                            }
+                        }
+                        runs.get(q).setText(oneparaString, 0);
+                        beforeOneparaString = oneparaString;
+                    }
+                }
+            }
+        }
+    }
     public static void processParagraphs(List<XWPFParagraph> paragraphList, Map<String, Object> param) {
         if (paragraphList != null && paragraphList.size() > 0) {
             for (XWPFParagraph paragraph : paragraphList) {
