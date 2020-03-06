@@ -1,9 +1,6 @@
 package AAAAAAPracs.http;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -40,8 +37,8 @@ public class https {
 
         connection.connect();
 
-        DataOutputStream out = new DataOutputStream(connection.getOutputStream());
-        out.writeChars(json);
+        OutputStreamWriter out = new  OutputStreamWriter(connection.getOutputStream());
+        out.append(json);
         out.flush();
         out.close();
 
