@@ -1,5 +1,7 @@
 package AAAAAAPracs.JPAExample;
 
+import java.util.List;
+
 /**
  * @author bockey
  */
@@ -14,4 +16,9 @@ public class local {
 //            "due_date date, invoice_amount varchar(255), invoice_number varchar(255), " +
 //            "perform_filename varchar(255), proj_id integer, seller varchar(255), primary key (asset_id))", nativeQuery = true)
 //    void createTable(@Param("tableName") Integer tableName);
+
+
+//    @Query(value = "select project_id from design_form where (process_id =" +
+//            "( select distinct process_id from msg_task where end_time >= ?1 and end_time <= ?2 ))", nativeQuery = true)
+//    List<Long> findProjectIdByDates(String start, String ends);
 }
