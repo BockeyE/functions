@@ -82,10 +82,10 @@ public class ExecutorConfig implements SchedulingConfigurer, AsyncConfigurer {
     @Bean(name = "asyncExecutor")
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
+        executor.setCorePoolSize(5);
         executor.setQueueCapacity(1000);
         executor.setKeepAliveSeconds(600);
-        executor.setMaxPoolSize(20);
+        executor.setMaxPoolSize(10);
         executor.setThreadNamePrefix("taskExecutor-");
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
         executor.initialize();
