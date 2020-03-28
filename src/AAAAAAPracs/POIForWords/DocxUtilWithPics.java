@@ -7,7 +7,6 @@ import org.apache.poi.xwpf.usermodel.*;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -222,15 +221,13 @@ public class DocxUtilWithPics {
 
     public static void addStampImage(List<XWPFParagraph> paragraphList, Map<String, byte[]> pics) {
         try {
-            System.out.println("go to docs imgs ");
             if (paragraphList != null && paragraphList.size() > 0) {
                 for (XWPFParagraph paragraph : paragraphList) {
-                    for (XWPFRun cell : paragraph.getRuns()) {//遍历每一个单元格
-                        System.out.println(cell.getText(0));
+                    for (XWPFRun run : paragraph.getRuns()) {//遍历每一个单元格
                         for (Map.Entry<String, byte[]> stringEntry : pics.entrySet()) {
-                            if (cell.getText(0) != null && cell.getText(0).contains("&{" + stringEntry.getKey() + "}")) {//如果遇到"&章"则进行替换
+                            if (run.getText(0) != null && run.getText(0).contains("${" + stringEntry.getKey() + "}")) {//如果遇到"&章"则进行替换
                                 try {
-                                    insertCellStamp(cell, stringEntry.getValue());//给带有要盖章字样的单元格 加上章的图片
+                                    insertCellStamp(run, "${" + stringEntry.getKey() + "}", stringEntry.getValue());//给带有要盖章字样的单元格 加上章的图片
                                 } catch (Exception e) {
                                     e.printStackTrace();
                                 }
@@ -247,22 +244,17 @@ public class DocxUtilWithPics {
 
     public static void addStampImage(XWPFTable table, Map<String, byte[]> m) {
         try {
-            System.out.println("go to docs imgs ");
-            System.out.println("table text:" + table.getText());
             for (XWPFTableRow row : table.getRows()) {
-                System.out.println("row getHeight:" + row.getHeight());
                 for (XWPFTableCell cell : row.getTableCells()) {//遍历每一个单元格
-                    System.out.println("cells :" + cell.getText());
                     for (Map.Entry<String, byte[]> stringEntry : m.entrySet()) {
-                        if (cell.getText().contains("&{" + stringEntry.getKey() + "}")) {//如果遇到"&章"则进行替换
+                        if (cell.getText().contains("${" + stringEntry.getKey() + "}")) {//如果遇到"&章"则进行替换
                             try {
-                                insertCellStamp(cell, stringEntry.getValue());//给带有要盖章字样的单元格 加上章的图片
+                                insertCellStamp(cell, "${" + stringEntry.getKey() + "}", stringEntry.getValue());//给带有要盖章字样的单元格 加上章的图片
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
                         }
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -270,72 +262,30 @@ public class DocxUtilWithPics {
         }
     }
 
-    private static void insertCellStamp(XWPFTableCell cell, byte[] picbytes) throws
+    private static void insertCellStamp(XWPFTableCell cell, String key, byte[] picbytes) throws
             InvalidFormatException, IOException {//给带有要盖章字样的单元格 加上章的图片
-        List<String> stamps = new ArrayList<>();//存放要加入的图片
-
-        //获取需要的图片，
-        for (XWPFParagraph para : cell.getParagraphs()) {
-            String paraText = para.getText();//从段落中获取要盖的章的名称
-            if (paraText != null) {
-                String[] split = para.getText().split(" ");
-                for (String s : split) {
-                    s = s.trim();
-                    if (!s.isEmpty()) {
-                        stamps.add(s.replace("&章", ""));//如：&章公章01.png，去掉标识符&章，只留下章的名字
-                    }
-                }
-            }
-        }
         for (XWPFParagraph para : cell.getParagraphs()) {
             for (XWPFRun run : para.getRuns()) {
-                run.setText("", 0);//清空所有文字
+                String text = run.getText(0);
+                String imgFile = "img";
+                ByteArrayInputStream is = new ByteArrayInputStream(picbytes);
+                run.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, imgFile, Units.toEMU(50), Units.toEMU(20)); // 100x100 pixels
+                is.close();
+                text = text.replace(key, "");
+                run.setText(text, 0);
             }
             //插入图片
-            for (int i = 0; i < stamps.size() && i < para.getRuns().size(); i++) {
-                try {
-                    XWPFRun run = para.getRuns().get(i);
-                    String imgFile = "img";
-                    ByteArrayInputStream is = new ByteArrayInputStream(picbytes);
-                    run.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, imgFile, Units.toEMU(50), Units.toEMU(20)); // 100x100 pixels
-                    is.close();
-                    run.setText("  ", 0);
-                } catch (Exception e) {
-                    System.out.println("Error: ========  插入单个公章图片时出错了:可能是图片路径不存在。不影响主流程");
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
-    private static void insertCellStamp(XWPFRun cell, byte[] picbytes) throws
-            InvalidFormatException, IOException {//给带有要盖章字样的单元格 加上章的图片
-        List<String> stamps = new ArrayList<>();//存放要加入的图片
-
-        //获取需要的图片，
-
-        String paraText = cell.getText(0);//从段落中获取要盖的章的名称
-        if (paraText != null) {
-            String[] split = cell.getText(0).split(" ");
-            for (String s : split) {
-                s = s.trim();
-                if (!s.isEmpty()) {
-                    stamps.add(s.replace("&章", ""));//如：&章公章01.png，去掉标识符&章，只留下章的名字
-                }
-            }
-        }
-        cell.setText("", 0);//清空所有文字
-        //插入图片
-        try {
-            String imgFile = "img";
-            ByteArrayInputStream is = new ByteArrayInputStream(picbytes);
-            cell.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, imgFile, Units.toEMU(50), Units.toEMU(20)); // 100x100 pixels
-            is.close();
-            cell.setText("  ", 0);
-        } catch (Exception e) {
-            System.out.println("Error: ========  插入单个公章图片时出错了:可能是图片路径不存在。不影响主流程");
-            e.printStackTrace();
-        }
+    private static void insertCellStamp(XWPFRun run, String key, byte[] picbytes) throws IOException, InvalidFormatException {
+        String text = run.getText(0);
+        String imgFile = "img";
+        ByteArrayInputStream is = new ByteArrayInputStream(picbytes);
+        run.addPicture(is, XWPFDocument.PICTURE_TYPE_JPEG, imgFile, Units.toEMU(50), Units.toEMU(20)); // 100x100 pixels
+        is.close();
+        text = text.replace(key, "");
+        run.setText(text, 0);
     }
 
 
