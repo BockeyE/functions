@@ -1,4 +1,4 @@
-package MongoAutoID;
+package AutoID;
 
 /**
  * @author bockey
