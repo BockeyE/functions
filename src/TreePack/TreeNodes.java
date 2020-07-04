@@ -138,7 +138,6 @@ public class TreeNodes {
 
 //    再给大家介绍一下层序遍历
 //    具体步骤如下：
-//
 //    首先申请一个新的队列，记为queue；
 //    将头结点head压入queue中；
 //    每次从queue中出队，记为node，然后打印node值，如果node左孩子不为空，则将左孩子入队；如果node的右孩子不为空，则将右孩子入队；
