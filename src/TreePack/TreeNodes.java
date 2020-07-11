@@ -82,8 +82,7 @@ public class TreeNodes {
         }
     }
 
-
-    //    具体过程：
+//    具体过程：
 //
 //    申请一个新栈，记为stack，申请一个变量cur，初始时令treeNode为头节点；
 //    先把treeNode节点压入栈中，对以treeNode节点为头的整棵子树来说，依次把整棵树的左子树压入栈中，即不断令treeNode=treeNode.leftChild，然后重复步骤2；
