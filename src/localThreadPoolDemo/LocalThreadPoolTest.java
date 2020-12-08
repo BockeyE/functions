@@ -195,6 +195,16 @@ class LocalBlockingQueue<T> {
 
     public void tryPut(LocalRejectPolicy<T> rejectPolicy, T task) {
         lock.lock();
+        try {
+            if (queue.size() == capacity) {
+                rejectPolicy.reject(this, task);
+            } else {
+                queue.addLast(task);
+                emptyWaitSet.signal();
+            }
+        } finally {
+            lock.unlock();
+        }
     }
 
 }
