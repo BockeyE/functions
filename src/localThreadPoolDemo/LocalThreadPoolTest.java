@@ -21,12 +21,14 @@ class LocalThreadPool {
 
     private TimeUnit timeUnit;
 
+    private LocalRejectPolicy<Runnable> rejectPolicy;
 
-    public LocalThreadPool(int coreSize, long timeout, TimeUnit timeUnit, int cap) {
+    public LocalThreadPool(int coreSize, long timeout, TimeUnit timeUnit, int cap, LocalRejectPolicy<Runnable> rejectPolicy) {
         this.coreSize = coreSize;
         this.timeout = timeout;
         this.timeUnit = timeUnit;
         this.taskQueue = new LocalBlockingQueue<>(cap);
+        this.rejectPolicy = rejectPolicy;
     }
 
 
@@ -72,9 +74,10 @@ class LocalThreadPool {
     }
 }
 
-
-
-
+@FunctionalInterface
+interface LocalRejectPolicy<T> {
+    void reject(LocalBlockingQueue<T> queue, T task);
+}
 
 class LocalBlockingQueue<T> {
     private Deque<T> queue = new ArrayDeque<>();
@@ -115,6 +118,29 @@ class LocalBlockingQueue<T> {
             T t = queue.removeFirst();
             fullWaitSet.signal();
             return t;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    //    带超时时间的阻塞添加
+    public boolean offer(T t, long timeout, TimeUnit timeUnit) {
+        lock.lock();
+        long nanos = timeUnit.toNanos(timeout);
+        try {
+            while (queue.size() == capacity) {
+                try {
+                    if (nanos <= 0) {
+                        return false;
+                    }
+                    nanos = fullWaitSet.awaitNanos(nanos);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            queue.addLast(t);
+            emptyWaitSet.signal();
+            return true;
         } finally {
             lock.unlock();
         }
@@ -165,4 +191,10 @@ class LocalBlockingQueue<T> {
             lock.unlock();
         }
     }
+
+
+    public void tryPut(LocalRejectPolicy<T> rejectPolicy, T task) {
+        lock.lock();
+    }
+
 }
