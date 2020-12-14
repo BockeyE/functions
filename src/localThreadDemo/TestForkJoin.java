@@ -1,4 +1,4 @@
-package localThreadPoolDemo;
+package localThreadDemo;
 
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;

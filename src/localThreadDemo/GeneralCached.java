@@ -1,4 +1,4 @@
-package localThreadPoolDemo;
+package localThreadDemo;
 
 import java.util.*;
 import java.util.concurrent.locks.ReentrantReadWriteLock;

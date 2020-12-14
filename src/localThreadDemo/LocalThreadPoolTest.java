@@ -1,4 +1,4 @@
-package localThreadPoolDemo;
+package localThreadDemo;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
