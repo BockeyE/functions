@@ -79,7 +79,7 @@ interface LocalRejectPolicy<T> {
     void reject(LocalBlockingQueue<T> queue, T task);
 }
 
-class LocalBlockingQueue<T> {
+class  LocalBlockingQueue<T> {
     private Deque<T> queue = new ArrayDeque<>();
 
     private ReentrantLock lock = new ReentrantLock();
@@ -100,6 +100,7 @@ class LocalBlockingQueue<T> {
     }
 
     //    带超时的阻塞获取
+
     public T poll(long timeout, TimeUnit timeUnit) {
         lock.lock();
         long nanos = timeUnit.toNanos(timeout);
