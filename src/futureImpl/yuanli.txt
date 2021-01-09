@@ -1,0 +1,247 @@
+    public <T> Future<T> submit(Runnable task, T result) {
+        if (task == null) throw new NullPointerException();
+        // 初始化FutureTask
+        RunnableFuture<T> ftask = newTaskFor(task, result);
+        execute(ftask);
+        return ftask;
+    }
+
+
+    初始化FutureTask通过调用： newTaskFor(Runnable runnable, T value)
+
+    protected <T> RunnableFuture<T> newTaskFor(Runnable runnable, T value) {
+            // 通过构造函数实例化FutureTask实例
+            return new FutureTask<T>(runnable, value);
+        }
+
+
+    FutureTask构造函数：
+
+     public FutureTask(Runnable runnable, V result) {
+            // 通过调用Executors.callable的方法进行实例化
+            this.callable = Executors.callable(runnable, result);
+            this.state = NEW;       // ensure visibility of callable
+        }
+
+
+    通过调用Executors的callable方法进行实例化，返回Callable实例
+    java.util.concurrent.Executors#callable(java.lang.Runnable, T)
+    这里使用了大家耳熟能详的适配器模式对Runnable接口进行适配成目标接口Callable的实例
+
+     public static <T> Callable<T> callable(Runnable task, T result) {
+            if (task == null)
+                throw new NullPointerException();
+            return new RunnableAdapter<T>(task, result);
+        }
+
+
+
+    java.util.concurrent.Executors.RunnableAdapter
+    RunnableAdapter是Executors的内部类，把Runnable任务通过适配器包装厂目标的Callable接口
+
+    static final class RunnableAdapter<T> implements Callable<T> {
+            final Runnable task;
+            final T result;
+            RunnableAdapter(Runnable task, T result) {
+                this.task = task;
+                this.result = result;
+            }
+            public T call() {
+                task.run();
+                return result;
+            }
+        }
+
+
+    通过上面分析，可以看出，当传入的是实现Runnable的接口实例的时候，会通过适配器进行适配，封装成目标接口Callable。
+
+
+
+    前面我们已经分析了FutureTask的实例化过程。其核心执行的逻辑是被封装在java.util.concurrent.FutureTask#run方法中。下面我们深入的分析下run方法的实现逻辑。
+
+    public void run() {
+            // 如果当前线程为 NEW的时候，通过CAS算法，将当前的成员变量 private volatile Thread runner; 初始化。
+            // 设置为当前执行线程，对应线程池中的一个线程
+            // 获取当前线程的主要用于get方法中唤醒操作。获取执行结果
+            if (state != NEW ||
+                !UNSAFE.compareAndSwapObject(this, runnerOffset,
+                                             null, Thread.currentThread()))
+                return;
+            try {
+                Callable<V> c = callable;
+                if (c != null && state == NEW) {
+                    V result;
+                    boolean ran;
+                    try {
+                        // 调用用户自动源码，复制给返回结果 result
+                        result = c.call();
+                        ran = true;
+                    } catch (Throwable ex) {
+                        result = null;
+                        ran = false;
+                        // 如果抛出异常，将当前的异常值赋值给outcome
+                        // 源码详情请参考：5.1.2、 setException(Throwable t)
+                        setException(ex);
+                    }
+                    // 如果执行成功，将临时变量result赋值给成员变量result
+                    if (ran)
+                        // set方法源码分析请参考5.1.1 java.util.concurrent.FutureTask#set
+                        set(result);
+                }
+            } finally {
+            	// 执行完成之后，将当前线程引用设置为null
+                runner = null;
+                // state must be re-read after nulling runner to prevent
+                // leaked interrupts
+                int s = state;
+                if (s >= INTERRUPTING)
+                    handlePossibleCancellationInterrupt(s);
+            }
+        }
+
+    1
+    39
+    40
+    5.1.1 java.util.concurrent.FutureTask#set
+     protected void set(V v) {
+            // 设置当前线程状态为执行中
+            if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {
+                // 赋值执行结果
+                outcome = v;
+                // 设置当前线程的状态为正常结束
+                UNSAFE.putOrderedInt(this, stateOffset, NORMAL); // final state
+                // 唤醒阻塞在get（） 方法上面的线程，详情源码请参考：5.1.3、 finishCompletion()
+                finishCompletion();
+            }
+        }
+
+    5.1.2、 setException(Throwable t)
+    protected void setException(Throwable t) {
+            // 如果抛出异常，设置到当前任务的执行状态为正在运行
+            if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {
+                // 将异常值赋值给outcome
+                outcome = t;
+                // 将当前线程的最终状态设置为执行异常
+                UNSAFE.putOrderedInt(this, stateOffset, EXCEPTIONAL); // final state
+                // 完成任务之后，做清理，详细源码分析，参考： 5.1.3、 finishCompletion()
+                finishCompletion();
+            }
+        }
+
+    5.1.3、finishCompletion()
+     private void finishCompletion() {
+            // assert state > COMPLETING;
+            // 在多线程环境下，当有多个线程等待获取当前任务的结果的时候，都调用get（）方法获取结果
+            // 这些等待结果的线程都会被存放到WaitNode waiters 链表中。
+            // 当执行完成后，都会唤醒当前阻塞的线程，获取当前的执行结果
+            for (WaitNode q; (q = waiters) != null;) {
+                if (UNSAFE.compareAndSwapObject(this, waitersOffset, q, null)) {
+                    for (;;) {
+                        Thread t = q.thread;
+                        if (t != null) {
+                            q.thread = null;
+                            // 唤醒指定的线程
+                            LockSupport.unpark(t);
+                        }
+                        WaitNode next = q.next;
+                        if (next == null)
+                            break;
+                        q.next = null; // unlink to help gc
+                        q = next;
+                    }
+                    break;
+                }
+            }
+
+            done();
+    		// 设置当前的callable为null
+            callable = null;        // to reduce footprint
+        }
+
+    6、java.util.concurrent.FutureTask#get() 源码分析
+    当线程去异步去执行任务的时候，当我们需要获取执行结果。那么我们就得调用get() 方法获取线程执行的结果。下面我们深入分析下get() 方法。
+
+    6.1、 java.util.concurrent.FutureTask#get()源码分析
+     public V get() throws InterruptedException, ExecutionException {
+            int s = state;
+            // 判断当前任务是否执行完成
+            if (s <= COMPLETING)
+               // 如果没有，将当前方法进行阻塞。传入参数 。flase表示一直阻塞。0
+                s = awaitDone(false, 0L);
+            // 6.3 java.util.concurrent.FutureTask#report 源码分析
+            return report(s);
+        }
+
+    6.2、java.util.concurrent.FutureTask#awaitDone(boolean timed, long nanos) 源码分析
+    timed：表示是否阻塞
+    nanos: 表示阻塞的时间
+
+    private int awaitDone(boolean timed, long nanos)
+            throws InterruptedException {
+            // 判断需要阻塞的时间
+            final long deadline = timed ? System.nanoTime() + nanos : 0L;
+            WaitNode q = null;
+            boolean queued = false;
+            // 死循环，一直判断当前的任务状态
+            // 如果当前任务是第一次调用get方法，那么会把当前任务封装成一个WaitNode 节点，添加到queue中。
+            for (;;) {
+               // 如果当前线程已经被中断，直接移除等待，抛出中断异常
+               // 具体的中断方式，可以通过java.util.concurrent.FutureTask#cancel(boolean mayInterruptIfRunning) 进行设置
+                if (Thread.interrupted()) {
+                    // 队列中移除当前
+                    removeWaiter(q);
+                    throw new InterruptedException();
+                }
+
+                int s = state;
+                // 如果当前线程已经运行完成，直接返回结果
+                if (s > COMPLETING) {
+                    if (q != null)
+                        // 置空当前的线程引用
+                        q.thread = null;
+                    return s;
+                }
+               // 如果当前线程还在执行，则礼让出获取状态
+                else if (s == COMPLETING) // cannot time out yet
+                    Thread.yield();
+                // 第一次调用get（）方法，会创建一个WaitNode 节点
+                // 第一次for循环，将当前节点q初始化
+                else if (q == null)
+                    q = new WaitNode();
+              // 第二次for循环，将当前的q节点追加到waiters节点
+                else if (!queued)
+                    queued = UNSAFE.compareAndSwapObject(this, waitersOffset,
+                                                         q.next = waiters, q);
+                // 第三次for循环，判断是否有时间限制。在指定的时间内获取结果，如果没有获取结果已出q从waiters中。
+                else if (timed) {
+                    nanos = deadline - System.nanoTime();
+                    if (nanos <= 0L) {
+                        // 从waiters中已出，返回状态state，传送给 java.util.concurrent.FutureTask#report
+                        removeWaiter(q);
+                        return state;
+                    }
+                    // 阻塞指定的时间，自动唤醒
+                    LockSupport.parkNanos(this, nanos);
+                }
+                else
+                    // 没有时间限制，一直阻塞当前线程
+                    // 唤醒之后，再次进入循环，直到满足条件退出
+                    LockSupport.park(this);
+            }
+        }
+
+    6.3 java.util.concurrent.FutureTask#report 源码分析
+    方法参数s,代表当前任务的状态
+
+    private V report(int s) throws ExecutionException {
+            // 赋值输出结果
+            Object x = outcome;
+            // 任务正常结束，返回指定的返回值
+            if (s == NORMAL)
+                return (V)x;
+            // 如果任务是被删除的话，直接抛出异常
+            if (s >= CANCELLED)
+                throw new CancellationException();
+            // 都不满足抛出异常
+            throw new ExecutionException((Throwable)x);
+        }

@@ -1,5 +1,7 @@
 package SnowFlakeDemo;
 
+import javax.crypto.Mac;
+
 /**
  *     1bit：固定为0，二进制中最高位为符号位，0为整数，1位负数。所以固定为0表示生成的ID都为正数
  *     41bit：作为毫秒数，大约能用69年。
@@ -115,7 +117,7 @@ public class SnowflakeIdWorker {
      */
     public synchronized long nextId() {
         long timestamp = timeGen();
-
+        Mac.getInstance("HmacSHA1");
         //如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常
         if (timestamp < lastTimestamp) {
             throw new RuntimeException(
